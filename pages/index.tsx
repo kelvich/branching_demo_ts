@@ -39,7 +39,7 @@ const Blog: React.FC<Props> = props => {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const res = await fetch('http://localhost:3000/api/feed')
+  const res = await fetch(`${process.env.NEXT_PUBLIC_VERCEL_URL}/api/feed`)
   const feed = await res.json()
   return {
     props: { feed },
