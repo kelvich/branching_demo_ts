@@ -18,7 +18,7 @@ jobs:
         run: |
           # create branch, and set BRANCH_NAME env variable
           echo 'BRANCH_NAME<<EOF' >> $GITHUB_ENV
-          curl -o - -X POST -H "Authorization: Bearer $API_TOKEN" https://console.stage.neon.tech/api/v1/projects/$PG_CLUSTER/branches | jq -r '.name' >> $GITHUB_ENV
+          curl -o - -X POST -H "Authorization: Bearer $API_TOKEN" https://console.stage.neon.tech/api/v1/projects/$PG_CLUSTER/branches | jq -r '.id' >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
           sleep 15 # TODO: await for creation finish
 
