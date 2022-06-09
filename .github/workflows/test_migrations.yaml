@@ -10,7 +10,6 @@ jobs:
       PG_PASS: mMgC9B2eujdJ
       PG_CLUSTER: lucky-field-758416
     steps:
-      - name: check_migration
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
