@@ -1,0 +1,24 @@
+name: test-migrations
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      API_TOKEN: 2zrab9orln7flap92eu8bovqg1v1u383o6dk6ielq9ih3kl3j9eoc0ie1yi2duan
+      PG_USER: kelvich
+      PG_PASS: mMgC9B2eujdJ
+      PG_CLUSTER: lucky-field-758416
+    steps:
+      - name: check_migration
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+      - run: |
+          BRANCH_INFO=`curl -o - -X POST -H "Authorization: Bearer $API_TOKEN" https://console.stage.neon.tech/api/v1/clusters/$PG_CLUSTER/branches`
+          echo $BRANCH_INFO 
+          BRANCH_NAME=`echo $BRANCH_INFO | jq -r '.name'`
+          BRANCH_URL="postgres://$PG_USER:$PG_PASS@$BRANCH_NAME.cloud.stage.zenith.tech/main"
+          echo $BRANCH_URL
+          DATABASE_URL=$BRANCH_URL prisma generate && prisma migrate deploy 
