@@ -21,7 +21,7 @@ jobs:
           BRANCH_NAME=`echo $BRANCH_INFO | jq -r '.name'`
           BRANCH_URL="postgres://$PG_CREDENTIALS@$BRANCH_NAME.cloud.stage.zenith.tech/main"
           echo $BRANCH_URL
-          DATABASE_URL=$BRANCH_URL prisma generate && prisma migrate deploy
+          DATABASE_URL=$BRANCH_URL npx prisma generate && npx prisma migrate deploy
 
       - name: apply migration on main
         run: |
