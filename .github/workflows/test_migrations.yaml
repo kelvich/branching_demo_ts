@@ -5,19 +5,34 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      API_TOKEN: 2zrab9orln7flap92eu8bovqg1v1u383o6dk6ielq9ih3kl3j9eoc0ie1yi2duan
-      PG_USER: kelvich
-      PG_PASS: mMgC9B2eujdJ
-      PG_CLUSTER: lucky-field-758416
+      API_TOKEN: ${{ secrets.NEON_TOKEN }}
+      PG_CREDENTIALS: ${{ secrets.NEON_PG_CREDENTIALS }}
+      PG_CLUSTER: ${{ secrets.NEON_CLUSTER }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: '16.x'
-      - run: |
+
+      - name: check migration on branch
+        run: |
           BRANCH_INFO=`curl -o - -X POST -H "Authorization: Bearer $API_TOKEN" https://console.stage.neon.tech/api/v1/projects/$PG_CLUSTER/branches`
           echo $BRANCH_INFO 
           BRANCH_NAME=`echo $BRANCH_INFO | jq -r '.name'`
-          BRANCH_URL="postgres://$PG_USER:$PG_PASS@$BRANCH_NAME.cloud.stage.zenith.tech/main"
+          BRANCH_URL="postgres://$PG_CREDENTIALS@$BRANCH_NAME.cloud.stage.zenith.tech/main"
           echo $BRANCH_URL
-          DATABASE_URL=$BRANCH_URL prisma generate && prisma migrate deploy 
+          DATABASE_URL=$BRANCH_URL prisma generate && prisma migrate deploy
+
+      - name: apply migration on main
+        run: |
+          DATABASE_URL="postgres://$PG_CREDENTIALS@$PG_CLUSTER.cloud.stage.zenith.tech/main"
+          echo $DATABASE_URL
+          DATABASE_URL=$DATABASE_URL prisma generate && prisma migrate deploy
+
+      - name: deploy on Vercel
+        run: |
+          npx vercel --token ${VERCEL_TOKEN}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
