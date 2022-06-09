@@ -14,21 +14,32 @@ jobs:
         with:
           node-version: '16.x'
 
-      - name: check migration on branch
+      - name: create branch
         run: |
           # create branch, and set BRANCH_NAME env variable
           echo 'BRANCH_NAME<<EOF' >> $GITHUB_ENV
           curl -o - -X POST -H "Authorization: Bearer $API_TOKEN" https://console.stage.neon.tech/api/v1/projects/$PG_CLUSTER/branches | jq -r '.name' >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
 
-          # apply migrations on branch
-          echo "DATABASE_URL=postgres://$PG_CREDENTIALS@$BRANCH_NAME.cloud.stage.zenith.tech/main" >> $GITHUB_ENV
+      - name: switch to branch
+        run: |
+          echo "DATABASE_URL=postgres://$PG_CREDENTIALS@${{ env.BRANCH_NAME }}.cloud.stage.zenith.tech/main" >> $GITHUB_ENV
+
+      - name: apply migration on branch
+        run: |
           npx prisma generate && npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+
+      - name: switch to main
+        run: |
+          echo "DATABASE_URL=postgres://$PG_CREDENTIALS@$PG_CLUSTER.cloud.stage.zenith.tech/main" >> $GITHUB_ENV
 
       - name: apply migration on main
         run: |
-          echo "DATABASE_URL=postgres://$PG_CREDENTIALS@$PG_CLUSTER.cloud.stage.zenith.tech/main" >> $GITHUB_ENV
           npx prisma generate && npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
 
       - name: deploy on Vercel
         run: |
