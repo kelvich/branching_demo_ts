@@ -23,7 +23,7 @@ jobs:
 
       - name: switch to branch
         run: |
-          echo "DATABASE_URL=postgres://$PG_CREDENTIALS@${{ env.BRANCH_NAME }}.cloud.stage.zenith.tech/main" >> $GITHUB_ENV
+          echo "DATABASE_URL=postgres://$PG_CREDENTIALS@${{ env.BRANCH_NAME }}.cloud.stage.neon.tech/main" >> $GITHUB_ENV
 
       - name: apply migration on branch
         run: |
@@ -33,7 +33,7 @@ jobs:
 
       - name: switch to main
         run: |
-          echo "DATABASE_URL=postgres://$PG_CREDENTIALS@$PG_CLUSTER.cloud.stage.zenith.tech/main" >> $GITHUB_ENV
+          echo "DATABASE_URL=postgres://$PG_CREDENTIALS@$PG_CLUSTER.cloud.stage.neon.tech/main" >> $GITHUB_ENV
 
       - name: apply migration on main
         run: |
