@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: '16.x'
       - run: |
-          BRANCH_INFO=`curl -o - -X POST -H "Authorization: Bearer $API_TOKEN" https://console.stage.neon.tech/api/v1/clusters/$PG_CLUSTER/branches`
+          BRANCH_INFO=`curl -o - -X POST -H "Authorization: Bearer $API_TOKEN" https://console.stage.neon.tech/api/v1/projects/$PG_CLUSTER/branches`
           echo $BRANCH_INFO 
           BRANCH_NAME=`echo $BRANCH_INFO | jq -r '.name'`
           BRANCH_URL="postgres://$PG_USER:$PG_PASS@$BRANCH_NAME.cloud.stage.zenith.tech/main"
