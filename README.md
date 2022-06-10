@@ -16,9 +16,24 @@ This repo includes [.github/workflows/test_migrations.yaml](.github/workflows/te
 
 ## Migration failure example
 
+1. Clone repo. To make it work locally run `npm install` and set following in the `.env` file:
+  ```
+  DATABASE_URL=postgres://<your_local_username>@localhost/branching_demo_ts
+  NEXT_PUBLIC_VERCEL_URL=localhost:3000
+  NEXT_PUBLIC_URL_PREFIX=http://
+  ```
 1. Ensure that [](prisma/schema.prisma) has `User.name` field typed as `String?`. If no, then commit a change to make it `String?`
 2. Go to the [](https://branching-demo-ts.vercel.app/) and create a post with an empty name. That will end up in `User` table as a NULL value for the user name
-3. Create a PR that changes the schema to force `not null` on user names (`String?` -> `String`). It will fail in the CI since migration will not pass
+3. Create a PR that changes the schema to force `not null` on user names (`String?` -> `String`). It will fail in the CI since migration will not pass:
+  ```
+  > git checkout -b not_null_names
+  > <edit prisma/schema.prisma>
+  > npx prisma migrate dev --name not_null_names
+  > git add prisma/migrations
+  > git commit -am 'Force non-null usernames'
+  > git push --set-upstream origin not_null_names
+  ```
+  After that go to the github repo webpage and click on a green box that suggest to create a PR. CI check will automatically start on the PR. It will fail since NULL names among users. You can go to the actions tab and look up otput for `ERROR: column "name" of relation "User" contains null values` error.
 4. Go to the [](https://console.stage.neon.tech) and set some names to users with null names, e.g. `update "User" set name='Stas' where email='stas3@stas.to'`
 5. Now re-run CI on the pull request. Go to `Actions`, select last run, and click `re-run all jobs` button in the top right corner. CI should pass now.
 
