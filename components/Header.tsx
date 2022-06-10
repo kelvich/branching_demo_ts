@@ -11,12 +11,15 @@ const Header: React.FC = () => {
     <nav>
       <div className="left">
         <Link href="/">
-          <a className="bold" data-active={isActive('/')}>
+          <a data-active={isActive('/')}>
             Blog
           </a>
         </Link>
         <Link href="/drafts">
           <a data-active={isActive('/drafts')}>Drafts</a>
+        </Link>
+        <Link href="/users">
+          <a data-active={isActive('/users')}>Users</a>
         </Link>
       </div>
       <div className="right">
@@ -45,7 +48,7 @@ const Header: React.FC = () => {
         }
 
         .left a[data-active='true'] {
-          color: gray;
+          font-weight: bold;
         }
 
         a + a {

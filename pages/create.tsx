@@ -6,11 +6,12 @@ const Draft: React.FC = () => {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [authorEmail, setAuthorEmail] = useState('')
+  const [authorName, setAuthorName] = useState('')
 
   const submitData = async (e: React.SyntheticEvent) => {
     e.preventDefault()
     try {
-      const body = { title, content, authorEmail }
+      const body = { title, content, authorEmail, authorName }
       await fetch(`/api/post`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -18,7 +19,7 @@ const Draft: React.FC = () => {
       })
       await Router.push('/drafts')
     } catch (error) {
-      console.error(error)
+      alert(JSON.stringify(error))
     }
   }
 
@@ -40,6 +41,12 @@ const Draft: React.FC = () => {
             placeholder="Author (email address)"
             type="text"
             value={authorEmail}
+          />
+          <input
+            onChange={e => setAuthorName(e.target.value)}
+            placeholder="Author Name, if new author"
+            type="text"
+            value={authorName}
           />
           <textarea
             cols={50}
