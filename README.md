@@ -16,6 +16,12 @@ This repo includes [.github/workflows/test_migrations.yaml](.github/workflows/te
 
 ## Migration failure example
 
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=xxiR8nYbCgM" target="_blank">
+ <img src="http://img.youtube.com/vi/xxiR8nYbCgM/mqdefault.jpg" alt="Watch the video" width="240" height="180" border="10" />
+</a>
+
+
 1. Clone repo. To make it work locally run `npm install` and set following in the `.env` file:
   ```
   DATABASE_URL=postgres://<your_local_username>@localhost/branching_demo_ts
