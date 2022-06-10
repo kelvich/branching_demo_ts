@@ -31,14 +31,12 @@ jobs:
         env:
           DATABASE_URL: ${{ env.BRANCH_URL }}
 
-      - name: deploy on Vercel
+      - name: deploy on Vercel on commit to main (it will migrate prod db too)
         run: |
           prodRun=""
           if [[ ${GITHUB_REF} == "refs/heads/main" ]]; then
-            prodRun="--prod"
+            npx vercel --token ${VERCEL_TOKEN} --prod
           fi
-
-          npx vercel --token ${VERCEL_TOKEN} $prodRun
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
