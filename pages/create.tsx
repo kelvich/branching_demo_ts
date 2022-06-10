@@ -6,7 +6,11 @@ const Draft: React.FC = () => {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [authorEmail, setAuthorEmail] = useState('')
-  const [authorName, setAuthorName] = useState('')
+
+  // `<null | string>` is a bit of a stretch that allows us to create NULLs
+  // in database. More realistic example is when we haven't had a name field
+  // in our form and that object ended up with `null` as a name value. 
+  const [authorName, setAuthorName] = useState<null | string>(null)
 
   const submitData = async (e: React.SyntheticEvent) => {
     e.preventDefault()
